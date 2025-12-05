@@ -89,7 +89,7 @@ export default function HomePage() {
         </div>
 
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-          {/* Connection Status Bar */}
+          {/*  Connection Status Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
             <div>
               {account ? (
