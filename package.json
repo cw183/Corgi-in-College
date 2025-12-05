@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "compile": "npx hardhat compile", // 确保您有这个编译脚本
+    "build": "npm run compile && next build", // <-- 将这一行改成这样
     "dev": "next dev",
-    "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
