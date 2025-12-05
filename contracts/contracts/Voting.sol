@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-/// @title Voting - 有截止時間與建立者資訊的是/否投票合約（前端可自訂截止時間）
-/// @notice 任何人都可以建立議題，每個地址對每個議題限投一次
+/// @title Voting - Yes/No voting contract with deadlines and creator info (frontend supplies deadline)
+/// @notice Anyone can create topics; each address can vote once per topic
 contract Voting {
     struct Topic {
-        string title;      // 議題標題
-        address creator;   // 建立者
-        uint256 deadline;  // 截止時間（UNIX timestamp, 秒）
-        uint256 yesCount;  // 贊成票數
-        uint256 noCount;   // 反對票數
-        bool exists;       // 議題是否存在
+        string title;      // topic title
+        address creator;   // creator
+        uint256 deadline;  // deadline (UNIX timestamp, seconds)
+        uint256 yesCount;  // yes vote count
+        uint256 noCount;   // no vote count
+        bool exists;       // whether topic exists
     }
 
-    // 最長投票時間（避免有人傳一個超級大的數）這裡設 30 天
+    // Maximum voting duration (prevent extremely large values); set to 30 days here
     uint256 public constant MAX_DURATION = 30 days;
 
     uint256 public nextTopicId;
@@ -29,9 +29,9 @@ contract Voting {
 
     event Voted(uint256 indexed topicId, address indexed voter, bool support);
 
-    /// @notice 建立新議題，前端傳入「投票期間秒數」
-    /// @param _title 議題標題
-    /// @param _durationSeconds 投票期間（秒），例如 1 天 = 86400
+    /// @notice Create a new topic; frontend passes the voting duration in seconds
+    /// @param _title Topic title
+    /// @param _durationSeconds Voting duration in seconds (e.g. 1 day = 86400)
     function createTopic(string memory _title, uint256 _durationSeconds)
         external
         returns (uint256 topicId)

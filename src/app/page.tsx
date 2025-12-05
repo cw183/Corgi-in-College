@@ -19,11 +19,11 @@ export default function HomePage() {
   const [view, setView] = useState<View>('home');
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
 
-  // 連接 MetaMask
+  // Connect MetaMask
   const connectWallet = async () => {
     try {
       if (!window.ethereum) {
-        alert('請先安裝 MetaMask');
+        alert('Please install MetaMask first');
         return;
       }
 
@@ -40,15 +40,15 @@ export default function HomePage() {
         setIsSepolia(true);
       } else {
         setIsSepolia(false);
-        alert('請切換到 Sepolia 測試網再使用此應用');
+        alert('Please switch to the Sepolia testnet before using this application');
       }
     } catch (err: any) {
       console.error(err);
-      alert('連接錢包時發生錯誤：' + (err?.message ?? '未知錯誤'));
+      alert('Error connecting wallet: ' + (err?.message ?? 'Unknown error'));
     }
   };
 
-  // 自動偵測是否已連線 + 網路
+  // Auto-detect if already connected + network
   useEffect(() => {
     const autoConnect = async () => {
       if (!window.ethereum) return;
@@ -83,35 +83,35 @@ export default function HomePage() {
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold mb-2">Welcome! Gorgi</h1>
           <p className="text-slate-400">
-            一個在 <span className="font-semibold text-teal-300">Sepolia</span>{' '}
-            上運行的去中心化投票與競標平台
+            A decentralized voting and auction platform running on{' '}
+            <span className="font-semibold text-teal-300">Sepolia</span>.
           </p>
         </div>
 
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-          {/* 連接狀態列 */}
+          {/* Connection Status Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
             <div>
               {account ? (
                 <>
-                  <p className="text-sm text-slate-400">已連接錢包</p>
+                  <p className="text-sm text-slate-400">Wallet Connected</p>
                   <p className="font-mono text-teal-300">{shortAddress}</p>
                   <p className="text-xs mt-1 text-slate-500">
-                    網路狀態：
+                    Network Status:
                     {isSepolia ? (
                       <span className="text-emerald-400 font-semibold">
                         Sepolia ✔
                       </span>
                     ) : (
                       <span className="text-red-400 font-semibold">
-                        非 Sepolia ✖
+                        Not Sepolia ✖
                       </span>
                     )}
                   </p>
                 </>
               ) : (
                 <p className="text-slate-400 text-sm">
-                  尚未連接錢包，請先連接 MetaMask。
+                  Wallet not connected. Please connect MetaMask.
                 </p>
               )}
             </div>
@@ -120,18 +120,18 @@ export default function HomePage() {
               onClick={connectWallet}
               className="px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 transition text-slate-900 font-semibold"
             >
-              {account ? '重新連接 MetaMask' : '連接 MetaMask 錢包'}
+              {account ? 'Reconnect MetaMask' : 'Connect MetaMask Wallet'}
             </button>
           </div>
 
-          {/* 主畫面：選擇去投票所 / 競標所 */}
+          {/* Main screen: choose to go to Voting or Auction */}
           {account && isSepolia && view === 'home' && (
             <div>
               <h2 className="text-xl font-semibold mb-2">
-                現在你想去哪裡？
+                Where do you want to go now?
               </h2>
               <p className="text-slate-400 mb-4 text-sm">
-                選擇一個功能開始互動（所有操作都會在 Sepolia 上進行）。
+                Choose a feature to start interacting (all operations will be conducted on Sepolia).
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -139,9 +139,9 @@ export default function HomePage() {
                   onClick={() => setView('vote')}
                   className="rounded-2xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 transition p-4 text-left"
                 >
-                  <h3 className="font-semibold mb-1">🗳 投票所</h3>
+                  <h3 className="font-semibold mb-1">🗳 Voting</h3>
                   <p className="text-sm text-slate-400">
-                    查看目前的投票議題、創建新議題、對感興趣的提案投下「是 / 否」。
+                    View current voting topics, create new topics, and cast "Yes / No" votes on proposals of interest.
                   </p>
                 </button>
 
@@ -149,23 +149,23 @@ export default function HomePage() {
                   onClick={() => setView('auction')}
                   className="rounded-2xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 transition p-4 text-left"
                 >
-                  <h3 className="font-semibold mb-1">🏦 競標所</h3>
+                  <h3 className="font-semibold mb-1">🏦 Auction</h3>
                   <p className="text-sm text-slate-400">
-                    每段時間會出現一件商品，出更高的標，成為暫時的最高出價者。
+                    Every period, an item will appear, and the highest bidder becomes the temporary highest bidder.
                   </p>
                 </button>
               </div>
             </div>
           )}
 
-          {/* 沒登入 / 沒在 Sepolia 時的提示 */}
+          {/* Prompt when not logged in / not on Sepolia */}
           {(!account || !isSepolia) && (
             <div className="mt-4 text-sm text-slate-400">
-              <p>請先連接錢包，並確認 MetaMask 網路切換到 Sepolia 測試網。</p>
+              <p>Please connect your wallet and ensure MetaMask is set to the Sepolia test network.</p>
             </div>
           )}
 
-          {/* 投票所 */}
+          {/* Voting Section */}
           {account && isSepolia && view === 'vote' && (
             <VoteSection
               onBack={() => setView('home')}
@@ -174,7 +174,7 @@ export default function HomePage() {
             />
           )}
 
-          {/* 競標所 */}
+          {/* Auction Section */}
           {account && isSepolia && view === 'auction' && (
             <AuctionSection
               onBack={() => setView('home')}
@@ -188,9 +188,9 @@ export default function HomePage() {
   );
 }
 
-// ================== 投票所 ==================
+// ================== Voting Section ==================
 
-// ================== 投票所區塊（接上鏈上 Voting 合約版本） ==================
+// ================== Voting Section (Connected to On-Chain Voting Contract) ==================
 
 type VoteSectionProps = {
   onBack: () => void;
@@ -204,11 +204,11 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
     { id: number; title: string; creator: string; deadline: number; yes: number; no: number }[]
   >([]);
   const [newTopic, setNewTopic] = useState('');
-  const [newDeadline, setNewDeadline] = useState(''); // datetime-local 的字串
+  const [newDeadline, setNewDeadline] = useState(''); // string in datetime-local format
   const [loading, setLoading] = useState(false);
   const [txLoading, setTxLoading] = useState(false);
 
-  // 取得 Voting 合約實例
+  // Get Voting contract instance
   const getVotingContract = async () => {
     if (!provider) throw new Error('No provider');
     const signer = await provider.getSigner();
@@ -219,7 +219,7 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
     );
   };
 
-  // 從鏈上讀取所有議題
+  // Load all topics from the blockchain
   const loadTopics = async () => {
     if (!provider) return;
     try {
@@ -241,50 +241,50 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
       setTopics(formatted);
     } catch (err) {
       console.error('loadTopics error:', err);
-      alert('讀取議題時發生錯誤（請確認你在 Sepolia，且合約地址正確）');
+      alert('Error loading topics (please ensure you are on Sepolia and the contract address is correct)');
     } finally {
       setLoading(false);
     }
   };
 
-  // 初始化時 / account 或 provider 變動時，重新載入
+  // Reload on initialization and when the account or provider changes.
   useEffect(() => {
     loadTopics();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, account]);
 
-  // 建立新議題：呼叫 createTopic
+  // Create new topic: call createTopic
   const createTopic = async () => {
   if (!newTopic.trim()) {
-    alert('請輸入議題標題');
+    alert('Please enter a topic title');
     return;
   }
   if (!newDeadline) {
-    alert('請選擇截止時間');
+    alert('Please select a deadline');
     return;
   }
   if (!provider) {
-    alert('尚未連接錢包');
+    alert('Wallet not connected');
     return;
   }
 
   try {
-    // 解析 datetime-local 的值，轉成 timestamp（秒）
-    // newDeadline 例如 "2025-11-25T15:30"
+    // Parse datetime-local value and convert to timestamp (seconds)
+    // newDeadline e.g. "2025-11-25T15:30"
     const selected = new Date(newDeadline);
     const deadlineSec = Math.floor(selected.getTime() / 1000);
     const nowSec = Math.floor(Date.now() / 1000);
 
     const durationSeconds = deadlineSec - nowSec;
     if (durationSeconds <= 0) {
-      alert('截止時間必須晚於現在');
+      alert('Deadline must be after the current time');
       return;
     }
 
-    // 最長 30 天限制（跟合約 MAX_DURATION 要一致）
+    // Maximum 30-day limit (should match contract MAX_DURATION)
     const maxDuration = 30 * 24 * 60 * 60;
     if (durationSeconds > maxDuration) {
-      alert('截止時間不能超過 30 天後');
+      alert('Deadline cannot be more than 30 days from now');
       return;
     }
 
@@ -299,17 +299,17 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
     await loadTopics();
   } catch (err: any) {
     console.error('createTopic error:', err);
-    alert('建立議題時發生錯誤：' + (err?.reason || err?.message || '未知錯誤'));
+    alert('Error creating topic: ' + (err?.reason || err?.message || 'Unknown error'));
   } finally {
     setTxLoading(false);
   }
 };
 
 
-  // 投票：呼叫 vote(topicId, support)
+  // Vote: call vote(topicId, support)
   const handleVote = async (id: number, support: boolean) => {
     if (!provider) {
-      alert('尚未連接錢包');
+      alert('Wallet not connected');
       return;
     }
     try {
@@ -324,7 +324,7 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
         err?.reason ||
         err?.error?.message ||
         err?.message ||
-        '投票時發生錯誤';
+        'Error during vote';
       alert(msg);
     } finally {
       setTxLoading(false);
@@ -337,37 +337,37 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
         onClick={onBack}
         className="text-sm text-slate-400 hover:text-slate-200"
       >
-        ← 回首頁
+        ← Back to Home
       </button>
 
       <div>
-        <h2 className="text-xl font-semibold mb-1">🗳 投票所</h2>
+        <h2 className="text-xl font-semibold mb-1">🗳 Voting</h2>
         <p className="text-slate-400 text-sm">
-          所有議題都儲存在 Sepolia 上，你的投票會直接寫入區塊鏈。
+          All topics are stored on Sepolia; your votes are recorded directly on-chain.
         </p>
         <p className="text-xs text-slate-500 mt-1">
-          當前地址：<span className="font-mono">{account}</span>
+          Current address: <span className="font-mono">{account}</span>
         </p>
       </div>
 
-      {/* 建立新議題 */}
+      {/* Create New Topic */}
       <div className="border border-slate-800 rounded-2xl p-4">
-      <h3 className="font-semibold mb-2">建立新議題</h3>
+      <h3 className="font-semibold mb-2">Create New Topic</h3>
 
       <div className="space-y-3">
         <div className="flex flex-col gap-2">
-          <label className="text-sm text-slate-300">議題標題</label>
+          <label className="text-sm text-slate-300">Topic Title</label>
           <input
             value={newTopic}
             onChange={(e) => setNewTopic(e.target.value)}
-            placeholder="例如：是否發行平台代幣？"
+            placeholder="e.g.: Should we issue a platform token?"
             className="flex-1 rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-sm outline-none focus:border-teal-400"
             disabled={txLoading}
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-sm text-slate-300">截止時間</label>
+          <label className="text-sm text-slate-300">Deadline</label>
           <input
             type="datetime-local"
             value={newDeadline}
@@ -376,8 +376,8 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
             disabled={txLoading}
           />
           <p className="text-xs text-slate-500">
-            你選的是本地時間，合約會換算成區塊鏈上的 UNIX timestamp。
-            最長可設定 {`30 天`} 內。
+            You selected local time; the contract will convert it to an on-chain UNIX timestamp.
+            Maximum: {`30 days`}.
           </p>
         </div>
 
@@ -387,21 +387,21 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
             disabled={txLoading || !newTopic.trim() || !newDeadline}
             className="px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-900 font-semibold text-sm"
           >
-            {txLoading ? '交易進行中...' : '建立議題'}
+            {txLoading ? 'Transaction in progress...' : 'Create Topic'}
           </button>
         </div>
       </div>
     </div>
 
 
-      {/* 公布欄 */}
+      {/* Voting board */}
       <div className="border border-slate-800 rounded-2xl p-4">
-        <h3 className="font-semibold mb-3">投票公布欄（鏈上資料）</h3>
+        <h3 className="font-semibold mb-3">Voting Board (on-chain data)</h3>
 
         {loading ? (
-          <p className="text-sm text-slate-500">讀取中...</p>
+          <p className="text-sm text-slate-500">Loading...</p>
         ) : topics.length === 0 ? (
-          <p className="text-sm text-slate-500">目前還沒有任何議題，試著建立一個吧！</p>
+          <p className="text-sm text-slate-500">No topics yet — try creating one!</p>
         ) : (
           <div className="space-y-3">
             {topics.map((topic) => (
@@ -413,14 +413,14 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
                   #{topic.id} {topic.title}
                 </p>
                 <p className="text-xs text-slate-500 mb-1">
-                  創建者：{topic.creator.slice(0, 6)}...{topic.creator.slice(-4)}
+                  Creator: {topic.creator.slice(0, 6)}...{topic.creator.slice(-4)}
                 </p>
                 <p className="text-xs text-slate-500 mb-1">
-                  截止時間：{new Date(topic.deadline * 1000).toLocaleString('zh-TW')}
-                  {topic.deadline * 1000 < Date.now() ? ' (已截止)' : ''}
+                  Deadline: {new Date(topic.deadline * 1000).toLocaleString()}
+                  {topic.deadline * 1000 < Date.now() ? ' (Ended)' : ''}
                 </p>
                 <p className="text-xs text-slate-500 mb-2">
-                  贊成：{topic.yes}，反對：{topic.no}
+                  Yes: {topic.yes}, No: {topic.no}
                 </p>
                 <div className="flex gap-2">
                   {topic.deadline * 1000 > Date.now() ? (
@@ -430,18 +430,18 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
                         disabled={txLoading}
                         className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 text-slate-900 text-xs font-semibold"
                       >
-                        贊成
+                        Yes
                       </button>
                       <button
                         onClick={() => handleVote(topic.id, false)}
                         disabled={txLoading}
                         className="px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-400 disabled:opacity-60 text-slate-900 text-xs font-semibold"
                       >
-                        反對
+                        No
                       </button>
                     </>
                   ) : (
-                    <span className="text-xs text-slate-500 italic">投票已截止</span>
+                    <span className="text-xs text-slate-500 italic">Voting closed</span>
                   )}
                 </div>
               </div>
@@ -454,7 +454,7 @@ function VoteSection({ onBack, provider, account }: VoteSectionProps) {
 }
 
 
-// ================== 競標所 ==================
+// ================== Auction Section ==================
 
 type AuctionSectionProps = {
   onBack: () => void;
@@ -478,7 +478,7 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
   const [loading, setLoading] = useState(false);
   const [txLoading, setTxLoading] = useState(false);
 
-  // 取得 Auction 合約實例
+  // Get Auction contract instance
   const getAuctionContract = async () => {
     if (!provider) throw new Error('No provider');
     const signer = await provider.getSigner();
@@ -489,14 +489,14 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
     );
   };
 
-  // 從鏈上讀取所有競標
+  // Load all auction items from the blockchain
   const loadItems = async () => {
     if (!provider) return;
     try {
       setLoading(true);
       const contract = await getAuctionContract();
 
-      // 獲取活躍競標
+      // Get active auctions
       const [activeIds, activeNames, activeSellers, activeEndTimes, activeHighestBidders, activeHighestBids] = await contract.getActiveItems();
       
       const formattedActive = (activeIds as bigint[]).map((id, idx) => ({
@@ -508,7 +508,7 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
         highestBid: ethers.formatEther(activeHighestBids[idx])
       }));
 
-      // 獲取所有競標
+      // Get all auctions
       const [allIds, allNames, allSellers, allEndTimes, allHighestBidders, allHighestBids, allEnded] = await contract.getAllItems();
       
       const formattedAll = (allIds as bigint[]).map((id, idx) => ({
@@ -525,30 +525,30 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
       setAllItems(formattedAll);
     } catch (err) {
       console.error('loadItems error:', err);
-      alert('讀取競標時發生錯誤');
+      alert('Error loading auctions');
     } finally {
       setLoading(false);
     }
   };
 
-  // 初始化時載入
+  // Load on initialization
   useEffect(() => {
     loadItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, account]);
 
-  // 建立新競標
+  // Create new auction/item
   const createItem = async () => {
     if (!newItemName.trim()) {
-      alert('請輸入商品名稱');
+      alert('Please enter an item name');
       return;
     }
     if (!newItemDuration) {
-      alert('請選擇競標時長');
+      alert('Please select auction duration');
       return;
     }
     if (!provider) {
-      alert('尚未連接錢包');
+      alert('Wallet not connected');
       return;
     }
 
@@ -566,20 +566,20 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
       await loadItems();
     } catch (err: any) {
       console.error('createItem error:', err);
-      alert('建立競標時發生錯誤：' + (err?.reason || err?.message || '未知錯誤'));
+      alert('Error creating auction: ' + (err?.reason || err?.message || 'Unknown error'));
     } finally {
       setTxLoading(false);
     }
   };
 
-  // 出價
+  // Place bid
   const placeBid = async (itemId: number) => {
     if (!provider) {
-      alert('尚未連接錢包');
+      alert('Wallet not connected');
       return;
     }
     if (!bidAmount || Number(bidAmount) <= 0) {
-      alert('請輸入有效的出價金額');
+      alert('Please enter a valid bid amount');
       return;
     }
 
@@ -591,7 +591,7 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
       const bidInWei = ethers.parseEther(bidAmount);
 
       if (balance < bidInWei) {
-        alert('錢包餘額不足，無法出價');
+        alert('Insufficient wallet balance to place bid');
         return;
       }
 
@@ -604,7 +604,7 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
       await loadItems();
     } catch (err: any) {
       console.error('placeBid error:', err);
-      const msg = err?.reason || err?.error?.message || err?.message || '出價時發生錯誤';
+      const msg = err?.reason || err?.error?.message || err?.message || 'Error placing bid';
       alert(msg);
     } finally {
       setTxLoading(false);
@@ -617,46 +617,46 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
         onClick={onBack}
         className="text-sm text-slate-400 hover:text-slate-200"
       >
-        ← 回首頁
+        ← Back to Home
       </button>
 
       <div>
-        <h2 className="text-xl font-semibold mb-1">🏦 競標所</h2>
+        <h2 className="text-xl font-semibold mb-1">🏦 Auction</h2>
         <p className="text-slate-400 text-sm">
-          所有競標都儲存在 Sepolia 上，你可以建立新商品或對現有商品出價。
+          All auctions are stored on Sepolia; you can create new items or bid on existing ones.
         </p>
         <p className="text-xs text-slate-500 mt-1">
-          當前地址：<span className="font-mono">{account}</span>
+          Current address: <span className="font-mono">{account}</span>
         </p>
       </div>
 
-      {/* 建立新競標 */}
+      {/* Create New Auction */}
       <div className="border border-slate-800 rounded-2xl p-4">
-        <h3 className="font-semibold mb-2">建立新競標</h3>
+        <h3 className="font-semibold mb-2">Create New Auction</h3>
         <div className="space-y-3">
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-slate-300">商品名稱</label>
+            <label className="text-sm text-slate-300">Item Name</label>
             <input
               value={newItemName}
               onChange={(e) => setNewItemName(e.target.value)}
-              placeholder="例如：神秘 Gorgi 收藏卡"
+              placeholder="e.g.: Mysterious Gorgi Collectible Card"
               className="rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-sm outline-none focus:border-teal-400"
               disabled={txLoading}
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-slate-300">競標時長</label>
+            <label className="text-sm text-slate-300">Auction Duration</label>
             <select
               value={newItemDuration}
               onChange={(e) => setNewItemDuration(e.target.value)}
               className="rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-sm outline-none focus:border-teal-400"
               disabled={txLoading}
             >
-              <option value="">選擇時長</option>
-              <option value="1">1 小時</option>
-              <option value="6">6 小時</option>
-              <option value="24">1 天</option>
-              <option value="168">1 週</option>
+              <option value="">Select duration</option>
+              <option value="1">1 hour</option>
+              <option value="6">6 hours</option>
+              <option value="24">1 day</option>
+              <option value="168">1 week</option>
             </select>
           </div>
           <button
@@ -664,18 +664,18 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
             disabled={txLoading || !newItemName.trim() || !newItemDuration}
             className="px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-900 font-semibold text-sm"
           >
-            {txLoading ? '交易進行中...' : '建立競標'}
+            {txLoading ? 'Transaction in progress...' : 'Create Auction'}
           </button>
         </div>
       </div>
 
-      {/* 活躍競標 */}
+      {/* Active Auctions */}
       <div className="border border-slate-800 rounded-2xl p-4">
-        <h3 className="font-semibold mb-3">活躍競標（鏈上資料）</h3>
-        {loading ? (
-          <p className="text-sm text-slate-500">讀取中...</p>
-        ) : activeItems.length === 0 ? (
-          <p className="text-sm text-slate-500">目前沒有活躍的競標，試著建立一個吧！</p>
+          <h3 className="font-semibold mb-3">Active Auctions (on-chain data)</h3>
+          {loading ? (
+            <p className="text-sm text-slate-500">Loading...</p>
+          ) : activeItems.length === 0 ? (
+            <p className="text-sm text-slate-500">No active auctions yet — try creating one!</p>
         ) : (
           <div className="space-y-3">
             {activeItems.map((item) => (
@@ -685,15 +685,15 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
               >
                 <p className="font-semibold mb-1">#{item.id} {item.name}</p>
                 <p className="text-xs text-slate-500 mb-1">
-                  賣家：{item.seller.slice(0, 6)}...{item.seller.slice(-4)}
+                  Seller: {item.seller.slice(0, 6)}...{item.seller.slice(-4)}
                 </p>
                 <p className="text-xs text-slate-500 mb-1">
-                  截止時間：{new Date(item.endTime * 1000).toLocaleString('zh-TW')}
+                  End time: {new Date(item.endTime * 1000).toLocaleString()}
                 </p>
                 <p className="text-xs text-slate-500 mb-2">
-                  當前最高標：{item.highestBid} ETH
+                  Current highest bid: {item.highestBid} ETH
                   {item.highestBidder !== '0x0000000000000000000000000000000000000000' && (
-                    <span> 由 {item.highestBidder.slice(0, 6)}...{item.highestBidder.slice(-4)}</span>
+                    <span> by {item.highestBidder.slice(0, 6)}...{item.highestBidder.slice(-4)}</span>
                   )}
                 </p>
                 
@@ -706,7 +706,7 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
                         step="0.001"
                         value={bidAmount}
                         onChange={(e) => setBidAmount(e.target.value)}
-                        placeholder={`需 > ${item.highestBid} ETH`}
+                        placeholder={`Must be > ${item.highestBid} ETH`}
                         className="flex-1 rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-xs outline-none focus:border-teal-400"
                         disabled={txLoading}
                       />
@@ -715,7 +715,7 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
                         disabled={txLoading}
                         className="px-3 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 text-slate-900 text-xs font-semibold"
                       >
-                        {txLoading ? '出價中...' : '確認出價'}
+                        {txLoading ? 'Bidding...' : 'Confirm Bid'}
                       </button>
                       <button
                         onClick={() => {
@@ -725,7 +725,7 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
                         disabled={txLoading}
                         className="px-3 py-2 rounded-lg bg-slate-600 hover:bg-slate-500 disabled:opacity-60 text-slate-200 text-xs font-semibold"
                       >
-                        取消
+                        Cancel
                       </button>
                     </div>
                   </div>
@@ -735,7 +735,7 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
                     disabled={txLoading || item.seller === account}
                     className="px-3 py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-900 text-xs font-semibold"
                   >
-                    {item.seller === account ? '自己的商品' : '出價'}
+                    {item.seller === account ? 'Your item' : 'Bid'}
                   </button>
                 )}
               </div>
@@ -744,16 +744,16 @@ function AuctionSection({ onBack, provider, account }: AuctionSectionProps) {
         )}
       </div>
 
-      {/* 歷史競標 */}
+      {/* Auction history */}
       {allItems.length > 0 && (
         <div className="border border-slate-800 rounded-2xl p-4">
-          <h3 className="font-semibold mb-3">所有競標記錄</h3>
+          <h3 className="font-semibold mb-3">All Auction Records</h3>
           <div className="space-y-2 max-h-60 overflow-y-auto">
             {allItems.map((item) => (
               <div key={item.id} className="flex justify-between items-center text-xs p-2 rounded bg-slate-950/60">
                 <span>#{item.id} {item.name}</span>
                 <span className={item.ended ? 'text-red-400' : 'text-green-400'}>
-                  {item.ended ? '已結束' : '進行中'} - {item.highestBid} ETH
+                  {item.ended ? 'Ended' : 'Ongoing'} - {item.highestBid} ETH
                 </span>
               </div>
             ))}

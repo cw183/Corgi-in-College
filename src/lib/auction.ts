@@ -1,13 +1,13 @@
-// Auction 合約配置
+// Auction contract configuration
 export const AUCTION_CONTRACT_ADDRESS = '0x2362E03b277b3cbe9Bef684f11D9ABc92d8bdC86';
 
 export const AUCTION_CONTRACT_ABI = [
-  // 事件
+  // events
   "event ItemCreated(uint256 indexed itemId, string name, address indexed seller, uint256 endTime)",
   "event HighestBidIncreased(uint256 indexed itemId, address indexed bidder, uint256 amount)",
   "event AuctionEnded(uint256 indexed itemId, address indexed winner, uint256 amount)",
   
-  // 讀取函數
+  // read (view) functions
   "function nextItemId() view returns (uint256)",
   "function items(uint256) view returns (string name, address seller, uint256 endTime, address highestBidder, uint256 highestBid, bool ended, bool exists)",
   "function pendingReturns(uint256, address) view returns (uint256)",
@@ -17,12 +17,12 @@ export const AUCTION_CONTRACT_ABI = [
   "function canEndAuction(uint256 _itemId) view returns (bool)",
   "function getPendingReturn(uint256 _itemId, address _user) view returns (uint256)",
   
-  // 寫入函數
+  // write (state-changing) functions
   "function createItem(string _name, uint256 _durationSeconds) returns (uint256 itemId)",
   "function bid(uint256 _itemId) payable",
   "function withdraw(uint256 _itemId)",
   "function endAuction(uint256 _itemId)",
   
-  // 常數
+  // constants
   "function MAX_DURATION() view returns (uint256)"
 ];

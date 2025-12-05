@@ -3,13 +3,13 @@ const hre = require("hardhat");
 async function main() {
   console.log("Deploying Voting contract...");
 
-  // 取得合約工廠
+  // get contract factory
   const Voting = await hre.ethers.getContractFactory("Voting");
 
-  // 部署合約（Voting 沒有 constructor 參數）
+  // deploy contract (Voting has no constructor parameters)
   const voting = await Voting.deploy();
 
-  // 等待部署完成
+  // wait for deployment
   await voting.deployed();
 
   console.log("Voting deployed to:", voting.address);

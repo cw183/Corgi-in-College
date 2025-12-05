@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-/// @title Auction - 競標合約（多個商品，每個商品有最高出價者與截止時間）
-/// @notice 任何人可以建立商品，大家可以用 ETH 出價，只有出價最高且在時間內者會贏
+/// @title Auction - Auction contract (multiple items, each with a highest bidder and end time)
+/// @notice Anyone can create items; people can bid with ETH, and the highest valid bidder wins
 contract Auction {
     struct Item {
-        string name;           // 商品名稱
-        address seller;        // 賣家
-        uint256 endTime;       // 截止時間（UNIX timestamp, 秒）
-        address highestBidder; // 目前最高出價者
-        uint256 highestBid;    // 目前最高出價（wei）
-        bool ended;            // 是否已結束（已領錢）
-        bool exists;           // 是否存在
+        string name;           // item name
+        address seller;        // seller
+        uint256 endTime;       // end time (UNIX timestamp, seconds)
+        address highestBidder; // current highest bidder
+        uint256 highestBid;    // current highest bid (wei)
+        bool ended;            // whether ended (funds claimed)
+        bool exists;           // whether exists
     }
 
     uint256 public constant MAX_DURATION = 30 days;
@@ -19,7 +19,7 @@ contract Auction {
     uint256 public nextItemId;
     mapping(uint256 => Item) public items;
 
-    // itemId => (address => 可提領的退款金額)
+    // itemId => (address => refundable amount)
     mapping(uint256 => mapping(address => uint256)) public pendingReturns;
 
     event ItemCreated(
@@ -41,9 +41,9 @@ contract Auction {
         uint256 amount
     );
 
-    /// @notice 建立一個新的競標商品
-    /// @param _name 商品名稱（例如：限量 NFT、神奇石頭）
-    /// @param _durationSeconds 競標持續時間（秒），前端可自由設定，最多 30 天
+    /// @notice Create a new auction item
+    /// @param _name Item name (e.g., limited NFT, magical stone)
+    /// @param _durationSeconds Auction duration in seconds (frontend may set; max 30 days)
     function createItem(string memory _name, uint256 _durationSeconds)
         external
         returns (uint256 itemId)
@@ -70,8 +70,8 @@ contract Auction {
         emit ItemCreated(itemId, _name, msg.sender, endTime);
     }
 
-    /// @notice 對某個商品出價（用 ETH）
-    /// @dev 需要用 msg.value 送 ETH 進來，必須高於目前最高出價
+    /// @notice Place a bid on an item (with ETH)
+    /// @dev Requires msg.value to be sent and must be higher than current highest bid
     function bid(uint256 _itemId) external payable {
         Item storage item = items[_itemId];
         require(item.exists, "Item not found");
@@ -81,7 +81,7 @@ contract Auction {
         require(msg.value > 0, "Bid must be > 0");
         require(msg.sender != item.seller, "Seller cannot bid on own item");
 
-        // 把前一個最高出價者的金額記錄到 pendingReturns
+        // Record the previous highest bidder's amount into pendingReturns
         if (item.highestBidder != address(0)) {
             pendingReturns[_itemId][item.highestBidder] += item.highestBid;
         }
@@ -92,7 +92,7 @@ contract Auction {
         emit HighestBidIncreased(_itemId, msg.sender, msg.value);
     }
 
-    /// @notice 讓沒得標的出價者提領退款
+    /// @notice Allow non-winning bidders to withdraw their refunds
     function withdraw(uint256 _itemId) external {
         uint256 amount = pendingReturns[_itemId][msg.sender];
         require(amount > 0, "Nothing to withdraw");
@@ -102,8 +102,8 @@ contract Auction {
         require(ok, "Withdraw failed");
     }
 
-    /// @notice 結束某個商品的競標，將款項轉給 seller
-    /// @dev 任何人都可以呼叫，只要時間到了
+    /// @notice End an item's auction and transfer funds to the seller
+    /// @dev Anyone can call once the end time has passed
     function endAuction(uint256 _itemId) external {
         Item storage item = items[_itemId];
         require(item.exists, "Item not found");
@@ -120,7 +120,7 @@ contract Auction {
         emit AuctionEnded(_itemId, item.highestBidder, item.highestBid);
     }
 
-    /// @notice 取得單一商品詳情
+    /// @notice Get details for a single item
     function getItem(uint256 _itemId)
         external
         view
@@ -145,7 +145,7 @@ contract Auction {
         );
     }
 
-    /// @notice 拿回所有商品（給前端列表用，台上可以顯示「最新那個」）
+    /// @notice Retrieve all items (for frontend listing; UI can show the newest one)
     function getAllItems()
         external
         view
@@ -184,7 +184,7 @@ contract Auction {
         }
     }
 
-    /// @notice 取得活躍的競標（未結束且未過期）
+    /// @notice Get active auctions (not ended and not expired)
     function getActiveItems()
         external
         view
@@ -197,7 +197,7 @@ contract Auction {
             uint256[] memory highestBids
         )
     {
-        // 先計算活躍競標數量
+        // First count active auctions
         uint256 activeCount = 0;
         for (uint256 i = 0; i < nextItemId; i++) {
             Item storage item = items[i];
@@ -228,13 +228,13 @@ contract Auction {
         }
     }
 
-    /// @notice 檢查某個商品是否可以結束
+    /// @notice Check whether an item can be ended
     function canEndAuction(uint256 _itemId) external view returns (bool) {
         Item storage item = items[_itemId];
         return item.exists && !item.ended && block.timestamp >= item.endTime;
     }
 
-    /// @notice 取得用戶在某個商品的待退款金額
+    /// @notice Get a user's pending refund amount for an item
     function getPendingReturn(uint256 _itemId, address _user) external view returns (uint256) {
         return pendingReturns[_itemId][_user];
     }
