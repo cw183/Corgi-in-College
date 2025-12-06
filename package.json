@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "compile": "npx hardhat compile",
     "build": "npm run compile && next build",
     "dev": "next dev",
     "start": "next start",
