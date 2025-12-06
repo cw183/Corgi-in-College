@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-        "compile": "npm run compile",
+    "compile": "npm run compile",
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
@@ -16,13 +16,19 @@
     "react-dom": "19.2.0"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^3.0.6",
+    "@nomicfoundation/hardhat-toolbox-viem": "^5.0.1",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^22.19.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.4",
+    "forge-std": "github:foundry-rs/forge-std#v1.9.4",
+    "hardhat": "^3.0.17",
     "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "typescript": "~5.8.0",
+    "viem": "^2.41.2"
+  },
+  "type": "module"
 }
